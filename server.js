@@ -17,9 +17,13 @@ myUserAgents =  myProxyList.myUserAgents;
 
 setInterval(dataAdder,1800000);
 
+
 function dataAdder(){
     console.log('Gathering Starting')
     var base_proxy_url = 'https://free-proxy-list.net/';
+    var base_proxy_url_two = 'https://www.socks-proxy.net/';
+    
+    
     let random = Math.floor(Math.random()*myUserAgents.length);
     var customHeaderRequest = request.defaults({
         
@@ -32,6 +36,7 @@ function dataAdder(){
 
         const $ = cherio.load(body);
         var proxy_getter = [];
+
         if(!err && res.statusCode==200){
             for(let i=1;i<=100;i++){
                 const ip_add = $(`#proxylisttable > tbody > tr:nth-child(${i}) > td:nth-child(1)`).text();
@@ -57,7 +62,7 @@ function dataAdder(){
                 database.remove({},{ multi: true },(err,numremoved)=>{
                     database.loadDatabase((err)=>{
                         console.log('done');
-                        setTimeout(insertData,100);
+                        insertData();
                     })
                 });
 
@@ -73,7 +78,52 @@ function dataAdder(){
         
         
        
-    })
+    });
+
+    // Scoks start
+
+    customHeaderRequest.get(base_proxy_url_two,(err,res,body)=>{
+        var proxy_getter_socks = [];
+
+        if(!err && res.statusCode==200){
+
+            const $ = cherio.load(body);
+
+            for(let i=1;i<=100;i++){
+                const ip_add = $(`#proxylisttable > tbody > tr:nth-child(${i}) > td:nth-child(1)`).text();
+                const ip_port = $(`#proxylisttable > tbody > tr:nth-child(${i}) > td:nth-child(2)`).text();
+                const ip_country = $(`#proxylisttable > tbody > tr:nth-child(${i}) > td:nth-child(4)`).text();
+                let ip_annomity = $(`#proxylisttable > tbody > tr:nth-child(${i}) > td:nth-child(5)`).text();
+                // (ip_annomity=='elite proxy')?ip_annomity='High':(ip_annomity=='anonymous')?ip_annomity='Medium':(ip_annomity=='level3')?ip_annomity='Very High':ip_annomity='Low';
+                let ip_type  = $(`#proxylisttable > tbody > tr:nth-child(${i}) > td:nth-child(7)`).text();
+                // (ip_type=='yes')?ip_type='HTTPS':ip_type='HTTP';
+
+                let All_proxy = {
+                    Ip_Address: ip_add,
+                    Ip_Port : ip_port,
+                    Ip_Type : ip_annomity,
+                    Ip_Country : ip_country,
+                }
+
+                proxy_getter_socks.push(All_proxy);
+                
+                
+            }
+            
+            insertDataProxy();
+            function insertDataProxy(){
+                database.loadDatabase();
+                database.insert(proxy_getter_socks);
+                console.log('Database Of Scoks Proxy Added Successfully');
+            }
+
+        }
+        else{
+            console.log('Error Adding Database');
+        }
+
+    });
+
 }
 
 app.get('/get_http_proxy',(req,mainres)=>{
@@ -118,3 +168,23 @@ app.get('/get_https_proxy',(req,mainres)=>{
 })
 
 
+app.get('/get_socks_proxy',(req,mainres)=>{
+
+    database.loadDatabase();
+    database.find({Ip_Type:'Socks4'},{Ip_Address:1,Ip_Port:1,Ip_Type:1,Ip_Country:1,_id:0},(err,data)=>{
+        if(!err){
+
+            let send_random_data = Math.floor(Math.random()*data.length);
+            mainres.json(data[send_random_data]);
+
+        }
+        else if(err){
+            mainres.json({Status:'Fail',Status_Code:69,Message:'Plz Try Again We Are Updating Database'});
+        }
+        else{
+           mainres.json({Status:'Fail',Status_Code:70,Message:'Plz Try Again We Are Updating Database'});
+        }
+    })
+
+    
+})
