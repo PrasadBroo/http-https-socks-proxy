@@ -29,6 +29,7 @@ Make request to any of above endpoint and get working proxy
 All Proxy Get Updated Every 30 mins
 
 
+
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://github.com/PrasadBroo/http-https-socks-proxy](https://github.com/PrasadBroo/)
