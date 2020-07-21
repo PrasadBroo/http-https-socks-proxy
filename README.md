@@ -34,15 +34,5 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://github.com/PrasadBroo/http-https-socks-proxy](https://github.com/PrasadBroo/)
 
-## Contributing
 
-1. Fork it (<https://github.com/PrasadBroo/http-https-socks-proxy/fork>)
-2. Commit your changes (`git commit -am 'some changes made'`)
-4. Push to the branch (`git push origin master`)
-5. Create a new Pull Request
-
-<!-- Markdown link & img dfn's -->
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/PrasadBroo/http-https-socks-proxy
 
